@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#125a88">
+  <meta name="description" content="선금·잔금 정산 및 수식 포함 엑셀 내보내기">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>선금·잔금 정산</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+  <style>
+    :root{--navy:#124d72;--blue:#1774a8;--sky:#eaf5fb;--line:#d8e2e8;--ink:#1d2a33;--muted:#647582;--green:#237a54;--yellow:#aa7610;--red:#ab3f3f;--bg:#f4f7f9;--card:#fff;--radius:16px;--shadow:0 8px 28px rgba(20,54,74,.09)}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;font-size:15px} button,input,select,textarea{font:inherit} button{cursor:pointer;border:0} .app{max-width:1440px;margin:auto;padding:18px 22px 56px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:18px;background:linear-gradient(115deg,var(--navy),#167eaf);padding:22px 26px;border-radius:20px;color:#fff;box-shadow:var(--shadow)} h1{font-size:24px;margin:0 0 4px}.subtitle{opacity:.82;margin:0;font-size:13px}.top-actions{display:flex;flex-wrap:wrap;gap:8px}.btn{padding:10px 14px;border-radius:10px;background:#fff;color:var(--navy);font-weight:700}.btn.secondary{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.32)}.btn.danger{color:#9d3030;background:#fff1f1}.btn.primary{background:var(--blue);color:#fff}.btn.small{padding:7px 10px;font-size:13px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stat{background:var(--card);padding:16px;border-radius:14px;box-shadow:var(--shadow);border-left:4px solid var(--blue)}.stat .label{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:22px;margin-top:6px}.stat.paid{border-color:var(--green)}.stat.expected{border-color:var(--yellow)}.stat.receivable{border-color:var(--red)}
+    .layout{display:grid;grid-template-columns:390px 1fr;gap:18px}.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}.card h2{font-size:18px;margin:0 0 16px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}label{display:block;font-size:12px;font-weight:700;color:#536773;margin:0 0 6px}input,select,textarea{width:100%;border:1px solid #cbd9e0;border-radius:9px;padding:10px;background:#fff;color:var(--ink)}input:focus,select:focus,textarea:focus{outline:3px solid #b8e2f5;border-color:var(--blue)}textarea{resize:vertical;min-height:58px}.hint{font-size:11px;line-height:1.45;color:var(--muted);margin:6px 0 0}.form-actions{display:flex;gap:8px;margin-top:16px}.form-actions .btn{flex:1}
+    .toolbar{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters select{width:auto;min-width:130px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.data-table{width:100%;min-width:970px;border-collapse:collapse;font-size:13px}.data-table th{position:sticky;top:0;background:#eaf5fb;color:#285168;text-align:left;padding:11px;border-bottom:1px solid var(--line);white-space:nowrap}.data-table td{padding:10px 11px;border-bottom:1px solid #edf1f3;vertical-align:middle}.data-table tr:last-child td{border:0}.data-table tr:hover td{background:#f7fbfd}.amount{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}.paid{background:#dff3e9;color:#19613f}.expected{background:#fff2cc;color:#815b08}.receivable{background:#fae4e2;color:#8f302c}.confirm{background:#eceafc;color:#5247a3}.empty{padding:48px 16px;text-align:center;color:var(--muted)}
+    .group{margin-top:14px;border:1px solid var(--line);border-radius:11px;padding:12px;background:#fbfdfe}.group h3{font-size:14px;margin:0 0 8px}.db-row{display:flex;gap:8px;margin-bottom:8px}.db-row input,.db-row select{min-width:0}.db-row .btn{white-space:nowrap}.notice{margin-top:18px;background:#eef7fa;border-left:4px solid var(--blue);padding:12px 14px;border-radius:8px;font-size:12px;line-height:1.6;color:#41606f}.hidden{display:none!important}
+    dialog{border:0;border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,.25);padding:0;max-width:620px;width:calc(100% - 28px)}dialog::backdrop{background:rgba(17,35,45,.45)}.modal-head{padding:18px 20px;background:var(--navy);color:#fff;display:flex;justify-content:space-between;align-items:center}.modal-head h2{margin:0;font-size:18px}.modal-body{padding:20px}.modal-body h3{font-size:15px;margin:18px 0 8px}.modal-body h3:first-child{margin-top:0}.master-list{max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:9px}.master-item{display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid #edf1f3;font-size:13px}.master-item:last-child{border:0}.footer-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+    @media(max-width:980px){.layout{grid-template-columns:1fr}.form-grid{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}} @media(max-width:650px){body{font-size:14px}.app{padding:10px 10px 40px}header{padding:18px;border-radius:14px;display:block}.top-actions{margin-top:14px}.top-actions .btn{flex:1;text-align:center}.stats{gap:8px;margin:10px 0}.stat{padding:12px}.stat strong{font-size:18px}.card{padding:15px;border-radius:13px}.form-grid{grid-template-columns:1fr 1fr;gap:9px}.toolbar{align-items:stretch;display:block}.filters{margin-top:8px}.filters select{flex:1}.form-actions{position:sticky;bottom:8px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 -3px 14px rgba(0,0,0,.08)}.desktop-only{display:none}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div><h1>선금·잔금 정산</h1><p class="subtitle">입력은 최소화하고, 재무팀용 엑셀은 수식으로 내보냅니다.</p></div>
+    <div class="top-actions"><button class="btn secondary" id="backupBtn">백업 저장</button><label class="btn secondary" for="restoreFile">백업 불러오기</label><input class="hidden" id="restoreFile" type="file" accept="application/json"><button class="btn" id="exportBtn">엑셀 내보내기</button></div>
+  </header>
+  <section class="stats" aria-label="월별 요약">
+    <div class="stat"><span class="label">이번 달 총 정산액</span><strong id="totalStat">0원</strong></div>
+    <div class="stat paid"><span class="label">입금완료</span><strong id="paidStat">0원</strong></div>
+    <div class="stat expected"><span class="label">입금예정</span><strong id="expectedStat">0원</strong></div>
+    <div class="stat receivable"><span class="label">미수·확인필요</span><strong id="openStat">0원</strong></div>
+  </section>
+  <main class="layout">
+    <section class="card">
+      <h2 id="formTitle">거래 등록</h2>
+      <form id="tradeForm">
+        <input type="hidden" id="editId">
+        <div class="form-grid">
+          <div><label for="month">정산 월</label><input id="month" type="month" required></div>
+          <div><label for="status">입금 상태</label><select id="status"><option value="입금완료">입금완료</option><option value="입금예정" selected>입금예정</option><option value="미수">미수</option><option value="확인필요">확인필요</option></select></div>
+          <div><label for="company">거래처</label><select id="company" required></select></div>
+          <div><label for="product">제품</label><select id="product" required></select></div>
+          <div><label for="settlementType">구분</label><select id="settlementType"><option>선금 입금</option><option>선금 50%</option><option>잔금</option><option>잔금 일부 입금</option><option>추가생산</option><option>선/잔금</option><option>시생산비</option><option>미수금</option></select></div>
+          <div><label for="calcMode">계산 방식</label><select id="calcMode"><option value="normal">단가 × 수량</option><option value="advance50">단가 × 수량 × 50%</option><option value="amountOnly">총액 직접 입력</option><option value="zeroVat">영세율 (VAT 0%)</option></select></div>
+          <div><label for="unitPrice">단가</label><input id="unitPrice" type="number" min="0" step="1" placeholder="제품 선택 시 자동 입력"></div>
+          <div><label for="quantity">수량</label><input id="quantity" type="number" min="0" step="0.01" placeholder="EA"></div>
+          <div><label for="amountOverride">입금액/총액 직접 입력</label><input id="amountOverride" type="number" min="0" step="1" placeholder="부분입금·미수 등만 입력"></div>
+          <div><label for="paymentDate">입금일 또는 예정일</label><input id="paymentDate" type="date"></div>
+          <div class="full"><label for="note">비고</label><textarea id="note" placeholder="예: 9/15 입금완료, 9/22 지급예정"></textarea><p class="hint">일반 거래는 단가와 수량만 입력하면 공급가액·VAT·총액이 자동 계산됩니다. 실제 입금액이 총액과 다를 때만 ‘직접 입력’을 사용하세요.</p></div>
+        </div>
+        <div class="form-actions"><button class="btn primary" type="submit" id="saveBtn">거래 저장</button><button class="btn secondary hidden" type="button" id="cancelEdit">수정 취소</button></div>
+      </form>
+      <div class="notice"><b>스마트폰 사용 안내</b><br>이 앱은 브라우저에 데이터를 저장합니다. 기기 간 자동 동기화는 아직 연결하지 않았으므로, 휴대폰과 PC 사이 이동 시 ‘백업 저장/불러오기’를 사용하세요. GitHub Pages 배포 후 Firebase 또는 Supabase를 연결하면 자동 동기화도 가능합니다.</div>
+    </section>
+    <section class="card">
+      <div class="toolbar"><div><h2>월별 거래 현황</h2><div class="filters"><select id="filterMonth"></select><select id="filterStatus"><option value="">전체 상태</option><option>입금완료</option><option>입금예정</option><option>미수</option><option>확인필요</option></select></div></div><button class="btn primary" id="masterBtn">거래처·제품 DB</button></div>
+      <div class="table-wrap"><table class="data-table"><thead><tr><th>상태</th><th>거래처 / 제품</th><th>구분</th><th>단가</th><th>수량</th><th>총금액</th><th>입금액</th><th>일자</th><th>비고</th><th></th></tr></thead><tbody id="tradeBody"></tbody></table></div>
+    </section>
+  </main>
+</div>
+<dialog id="masterDialog"><div class="modal-head"><h2>거래처·제품 DB 관리</h2><button class="btn small" id="closeMaster">닫기</button></div><div class="modal-body">
+  <h3>거래처 추가</h3><div class="db-row"><input id="newCompany" placeholder="거래처명"><button class="btn primary small" id="addCompany">추가</button></div><div class="master-list" id="companyList"></div>
+  <h3>제품 추가</h3><div class="db-row"><select id="masterCompany"></select><input id="newProduct" placeholder="제품명"><input id="newPrice" type="number" min="0" placeholder="기본 단가"><select id="newTax"><option value="tax">VAT 10%</option><option value="zero">영세율</option></select><button class="btn primary small" id="addProduct">추가</button></div><div class="master-list" id="productList"></div>
+  <div class="footer-actions"><button class="btn secondary" id="resetDemo">기본 예시 복원</button></div>
+</div></dialog>
+<script>
+(() => {
+  const STORAGE='conf_payment_app_v1', MASTER='conf_payment_master_v1';
+  const today=new Date(); const defaultMonth=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  const $=id=>document.getElementById(id); const money=n=>new Intl.NumberFormat('ko-KR').format(Math.round(Number(n)||0))+'원';
+  const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+  const baseMaster={companies:['소연코퍼레이션','바이오넥스트 컴퍼니','더베이글','낫띵베럴','영암군 사업비','CÔNG TY TNHH CLICK VINA','유일식품','㈜쟈뎅','더옳은협동조합','원그래비티'],products:[
+    {company:'소연코퍼레이션',name:'터닝워터 20만병',price:236,tax:'tax'}, {company:'바이오넥스트 컴퍼니',name:'ABC 48시간 리셋 클렌즈',price:4091,tax:'tax'},
+    {company:'더베이글',name:'리턴 에이지 워터',price:730,tax:'tax'}, {company:'더베이글',name:'클린클렌즈 48시간 ABC',price:4425,tax:'tax'}, {company:'낫띵베럴',name:'이너클렌즈 48시간 CCA',price:4250,tax:'tax'},
+    {company:'유일식품',name:'나비잠',price:307,tax:'tax'}, {company:'㈜쟈뎅',name:'암웨이 포션커피 시생산',price:2272727,tax:'tax'}, {company:'더옳은협동조합',name:'시그니쳐쌍화 30g 포션',price:210,tax:'tax'},
+    {company:'원그래비티',name:'뱅쇼서울',price:160,tax:'tax'}, {company:'원그래비티',name:'니생강',price:156,tax:'tax'}, {company:'CÔNG TY TNHH CLICK VINA',name:'카페포션 아메리카노 블랙',price:12000,tax:'zero'}
+  ]};
+  const demo=[
+    ['바이오넥스트 컴퍼니','ABC 48시간 리셋 클렌즈','잔금',4091,10000,'normal','입금완료',22500500,'2026-08-31','1만병 잔금 50%'],
+    ['바이오넥스트 컴퍼니','ABC 48시간 리셋 클렌즈','추가생산',4091,158,'normal','입금완료',711016,'2026-09-15','추가생산분 잔금'],
+    ['바이오넥스트 컴퍼니','ABC 48시간 리셋 클렌즈 2차','선금 50%',4091,15000,'advance50','입금완료',33750750,'2026-09-15','2차 재발주 선금 50%'],
+    ['더옳은협동조합','시그니쳐쌍화 30g 포션','선/잔금',210,17400,'normal','입금완료',4019400,'2026-09-15','시그니쳐쌍화'],
+    ['원그래비티','뱅쇼서울','선금 입금',160,56818.18,'amountOnly','입금완료',10000000,'2026-09-04','총 71,200EA 중 선금분'],
+    ['원그래비티','뱅쇼서울','잔금',160,14381.82,'normal','입금예정',null,'','잔여 수량 기준'],
+    ['원그래비티','니생강','선/잔금',156,38670,'normal','입금예정',null,'','일정 확인 필요']
+  ].map(x=>({id:uid(),month:'2026-09',company:x[0],product:x[1],type:x[2],unitPrice:x[3],quantity:x[4],calcMode:x[5],status:x[6],amountOverride:x[7],paymentDate:x[8],note:x[9]}));
+  let master=JSON.parse(localStorage.getItem(MASTER)||'null')||structuredClone(baseMaster);
+  let trades=JSON.parse(localStorage.getItem(STORAGE)||'null')||demo;
+  const save=()=>{localStorage.setItem(STORAGE,JSON.stringify(trades));localStorage.setItem(MASTER,JSON.stringify(master));};
+  function calc(t){const p=Number(t.unitPrice)||0,q=Number(t.quantity)||0,override=Number(t.amountOverride)||0; let supply=0,vat=0,total=0;if(t.calcMode==='amountOnly'){total=override;supply=Math.round(total/1.1);vat=total-supply}else if(t.calcMode==='advance50'){supply=Math.round(p*q*.5);vat=Math.round(supply*.1);total=supply+vat}else{ supply=Math.round(p*q);vat=t.calcMode==='zeroVat'?0:Math.round(supply*.1);total=supply+vat } const payment=override||total;return {supply,vat,total,payment};}
+  function fillCompanies(){const opts=['<option value="">선택</option>',...master.companies.map(v=>`<option>${escapeHtml(v)}</option>`)].join('');$('company').innerHTML=opts;$('masterCompany').innerHTML=opts;}
+  function fillProducts(company,selected=''){const products=master.products.filter(p=>p.company===company);$('product').innerHTML=['<option value="">선택</option>',...products.map(p=>`<option value="${escapeAttr(p.name)}">${escapeHtml(p.name)}</option>`)].join('');if(selected)$('product').value=selected;}
+  function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));} function escapeAttr(v){return escapeHtml(v)}
+  function refreshMonths(){const months=[...new Set([defaultMonth,...trades.map(t=>t.month)])].sort().reverse();const cur=$('filterMonth').value||defaultMonth;$('filterMonth').innerHTML=months.map(m=>`<option value="${m}">${m.replace('-','년 ')}월</option>`).join('');$('filterMonth').value=months.includes(cur)?cur:months[0];}
+  function statusClass(v){return v==='입금완료'?'paid':v==='입금예정'?'expected':v==='미수'?'receivable':'confirm'}
+  function render(){refreshMonths();const m=$('filterMonth').value,st=$('filterStatus').value;const list=trades.filter(t=>t.month===m&&(!st||t.status===st));const body=$('tradeBody');if(!list.length){body.innerHTML='<tr><td colspan="10" class="empty">등록된 거래가 없습니다.</td></tr>'}else{body.innerHTML=list.map(t=>{const c=calc(t);return `<tr><td><span class="badge ${statusClass(t.status)}">${t.status}</span></td><td><b>${escapeHtml(t.company)}</b><br><span style="color:#657984">${escapeHtml(t.product)}</span></td><td>${escapeHtml(t.type)}</td><td class="amount">${Number(t.unitPrice)?Number(t.unitPrice).toLocaleString():'-'}</td><td class="amount">${Number(t.quantity)?Number(t.quantity).toLocaleString(undefined,{maximumFractionDigits:2}):'-'}</td><td class="amount">${money(c.total)}</td><td class="amount">${money(c.payment)}</td><td>${t.paymentDate||'-'}</td><td>${escapeHtml(t.note||'')}</td><td><button class="btn small" data-edit="${t.id}">수정</button> <button class="btn small danger" data-del="${t.id}">삭제</button></td></tr>`}).join('')}
+    const all=trades.filter(t=>t.month===m), sum=(filter)=>all.filter(filter).reduce((a,t)=>a+calc(t).payment,0); $('totalStat').textContent=money(all.reduce((a,t)=>a+calc(t).total,0));$('paidStat').textContent=money(sum(t=>t.status==='입금완료'));$('expectedStat').textContent=money(sum(t=>t.status==='입금예정'));$('openStat').textContent=money(sum(t=>t.status==='미수'||t.status==='확인필요'));
+  }
+  function resetForm(){$('tradeForm').reset();$('editId').value='';$('month').value=$('filterMonth').value||defaultMonth;fillCompanies();fillProducts('');$('formTitle').textContent='거래 등록';$('saveBtn').textContent='거래 저장';$('cancelEdit').classList.add('hidden');}
+  function loadForm(t){$('editId').value=t.id;$('month').value=t.month;$('status').value=t.status;fillCompanies();$('company').value=t.company;fillProducts(t.company,t.product);$('settlementType').value=t.type;$('calcMode').value=t.calcMode;$('unitPrice').value=t.unitPrice||'';$('quantity').value=t.quantity||'';$('amountOverride').value=t.amountOverride||'';$('paymentDate').value=t.paymentDate||'';$('note').value=t.note||'';$('formTitle').textContent='거래 수정';$('saveBtn').textContent='수정 저장';$('cancelEdit').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+  $('company').addEventListener('change',e=>fillProducts(e.target.value)); $('product').addEventListener('change',e=>{const p=master.products.find(p=>p.company===$('company').value&&p.name===e.target.value);if(p){$('unitPrice').value=p.price;if(p.tax==='zero')$('calcMode').value='zeroVat';}});
+  $('tradeForm').addEventListener('submit',e=>{e.preventDefault();const obj={id:$('editId').value||uid(),month:$('month').value,company:$('company').value,product:$('product').value,type:$('settlementType').value,calcMode:$('calcMode').value,unitPrice:Number($('unitPrice').value)||0,quantity:Number($('quantity').value)||0,status:$('status').value,amountOverride:Number($('amountOverride').value)||null,paymentDate:$('paymentDate').value,note:$('note').value.trim()};if(!obj.company||!obj.product)return alert('거래처와 제품을 선택하세요.');const i=trades.findIndex(t=>t.id===obj.id);if(i>=0)trades[i]=obj;else trades.push(obj);save();refreshMonths();$('filterMonth').value=obj.month;resetForm();render();});
+  $('cancelEdit').onclick=resetForm;$('filterMonth').onchange=render;$('filterStatus').onchange=render;
+  $('tradeBody').addEventListener('click',e=>{const id=e.target.dataset.edit||e.target.dataset.del;if(!id)return;if(e.target.dataset.del){if(confirm('이 거래를 삭제할까요?')){trades=trades.filter(t=>t.id!==id);save();render();}}else loadForm(trades.find(t=>t.id===id));});
+  function renderMaster(){fillCompanies();$('companyList').innerHTML=master.companies.map(c=>`<div class="master-item"><span>${escapeHtml(c)}</span><button class="btn small danger" data-cdel="${escapeAttr(c)}">삭제</button></div>`).join('');$('productList').innerHTML=master.products.map((p,i)=>`<div class="master-item"><span>${escapeHtml(p.company)} · ${escapeHtml(p.name)} <b>(${Number(p.price).toLocaleString()}원)</b></span><button class="btn small danger" data-pdel="${i}">삭제</button></div>`).join('');}
+  $('masterBtn').onclick=()=>{renderMaster();$('masterDialog').showModal()};$('closeMaster').onclick=()=>$('masterDialog').close();
+  $('addCompany').onclick=()=>{const n=$('newCompany').value.trim();if(!n)return;if(master.companies.includes(n))return alert('이미 있습니다.');master.companies.push(n);$('newCompany').value='';save();renderMaster();};
+  $('addProduct').onclick=()=>{const c=$('masterCompany').value,n=$('newProduct').value.trim(),p=Number($('newPrice').value);if(!c||!n||!Number.isFinite(p))return alert('거래처, 제품명, 단가를 입력하세요.');master.products.push({company:c,name:n,price:p,tax:$('newTax').value});$('newProduct').value='';$('newPrice').value='';save();renderMaster();};
+  $('companyList').onclick=e=>{const n=e.target.dataset.cdel;if(!n)return;if(confirm(`${n} 거래처를 삭제할까요?`)){master.companies=master.companies.filter(x=>x!==n);master.products=master.products.filter(x=>x.company!==n);save();renderMaster();}};
+  $('productList').onclick=e=>{if(e.target.dataset.pdel===undefined)return;master.products.splice(Number(e.target.dataset.pdel),1);save();renderMaster();};
+  $('resetDemo').onclick=()=>{if(confirm('현재 DB와 거래를 기본 예시로 되돌릴까요?')){master=structuredClone(baseMaster);trades=structuredClone(demo);save();$('masterDialog').close();resetForm();render();}};
+  function download(text,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+  $('backupBtn').onclick=()=>download(JSON.stringify({master,trades},null,2),`선금정산_백업_${new Date().toISOString().slice(0,10)}.json`,'application/json');
+  $('restoreFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.trades)||!d.master)throw Error();master=d.master;trades=d.trades;save();resetForm();render();alert('백업을 불러왔습니다.')}catch{alert('올바른 백업 파일이 아닙니다.')}e.target.value=''};
+  function setCell(ws,addr,value,style){ws[addr]={v:value,t:typeof value==='number'?'n':'s',s:style};} function formula(ws,addr,f,style){ws[addr]={f:f,s:style};}
+  function exportExcel(){if(!window.XLSX)return alert('엑셀 모듈을 불러오지 못했습니다. 인터넷 연결 후 다시 시도하세요.');const month=$('filterMonth').value;const list=trades.filter(t=>t.month===month).sort((a,b)=>a.company.localeCompare(b.company,'ko')||a.product.localeCompare(b.product,'ko'));const wb=XLSX.utils.book_new(),ws={};const border={style:'thin',color:{rgb:'C8D5DC'}}, styles={title:{font:{bold:true,sz:15,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'124D72'}},alignment:{horizontal:'center',vertical:'center'}},head:{font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'1774A8'}},alignment:{horizontal:'center',vertical:'center',wrapText:true},border:{top:border,bottom:border,left:border,right:border}},cell:{border:{top:border,bottom:border,left:border,right:border},alignment:{vertical:'center'}},num:{border:{top:border,bottom:border,left:border,right:border},alignment:{horizontal:'right'},numFmt:'#,##0;[Red](#,##0);-'},subtotal:{font:{bold:true},fill:{fgColor:{rgb:'DCECF4'}},border:{top:border,bottom:border,left:border,right:border},alignment:{horizontal:'right'},numFmt:'#,##0;[Red](#,##0);-'}};ws['!merges']=[XLSX.utils.decode_range('B1:L1')];setCell(ws,'B1',`${month.replace('-','.')}월 선금 및 잔금 예상 규모`,styles.title);const headers=['No.','업체명','제품','구분','단가','수량','금액','VAT','총금액','입금액','비고'];headers.forEach((h,i)=>setCell(ws,XLSX.utils.encode_cell({r:2,c:i+1}),h,styles.head));let r=3,no=1;const companies=[...new Set(list.map(x=>x.company))];for(const company of companies){const group=list.filter(x=>x.company===company);const first=r;group.forEach((t,i)=>{const row=r+1, c=calc(t), useOverride=Number(t.amountOverride)>0;setCell(ws,`B${row}`,i===0?no:'',styles.cell);setCell(ws,`C${row}`,i===0?company:'',styles.cell);setCell(ws,`D${row}`,t.product,styles.cell);setCell(ws,`E${row}`,t.type,styles.cell);setCell(ws,`F${row}`,t.unitPrice||'',styles.num);setCell(ws,`G${row}`,t.quantity||'',styles.num);if(t.calcMode==='amountOnly'){formula(ws,`H${row}`,`ROUND(J${row}/1.1,0)`,styles.num);formula(ws,`I${row}`,`J${row}-H${row}`,styles.num);setCell(ws,`J${row}`,c.total,styles.num)}else if(t.calcMode==='advance50'){formula(ws,`H${row}`,`ROUND(F${row}*G${row}*0.5,0)`,styles.num);formula(ws,`I${row}`,`ROUND(H${row}*0.1,0)`,styles.num);formula(ws,`J${row}`,`H${row}+I${row}`,styles.num)}else{formula(ws,`H${row}`,`F${row}*G${row}`,styles.num);t.calcMode==='zeroVat'?setCell(ws,`I${row}`,0,styles.num):formula(ws,`I${row}`,`ROUND(H${row}*0.1,0)`,styles.num);formula(ws,`J${row}`,`H${row}+I${row}`,styles.num)}if(useOverride)setCell(ws,`K${row}`,c.payment,styles.num);else formula(ws,`K${row}`,`J${row}`,styles.num);setCell(ws,`L${row}`,`${t.status}${t.paymentDate?' · '+t.paymentDate:''}${t.note?' · '+t.note:''}`,styles.cell);r++;});if(group.length>1){const row=r+1;setCell(ws,`D${row}`,'소계',styles.subtotal);formula(ws,`J${row}`,`SUM(J${first+1}:J${r})`,styles.subtotal);formula(ws,`K${row}`,`SUM(K${first+1}:K${r})`,styles.subtotal);r++;}no++;}const totalRow=r+1;setCell(ws,`C${totalRow}`,'계',styles.subtotal);formula(ws,`K${totalRow}`,`SUM(K4:K${r})`,styles.subtotal);ws['!ref']=`B1:L${totalRow}`;ws['!cols']=[{wch:5},{wch:19},{wch:31},{wch:14},{wch:12},{wch:12},{wch:15},{wch:13},{wch:15},{wch:15},{wch:42}];ws['!rows']=[{hpt:25},{hpt:20}];XLSX.utils.book_append_sheet(wb,ws,`${month.slice(5)}월_선수금현황`);
+    const db=XLSX.utils.json_to_sheet(list.map(t=>({...t,...calc(t)})));db['!cols']=[{wch:12},{wch:20},{wch:28},{wch:14},{wch:12},{wch:12},{wch:13},{wch:12},{wch:13},{wch:15},{wch:15},{wch:35}];XLSX.utils.book_append_sheet(wb,db,'입력데이터');
+    const guide=XLSX.utils.aoa_to_sheet([['재무팀 확인 안내'],['첫 번째 시트는 정산 현황이며 공급가액·VAT·총액·소계·합계에 Excel 수식이 포함되어 있습니다.'],['두 번째 시트는 웹앱 입력 원본입니다.']]);guide['!cols']=[{wch:110}];XLSX.utils.book_append_sheet(wb,guide,'안내');XLSX.writeFile(wb,`${month.replace('-','년')}월_선금자료_재무팀제출용.xlsx`);
+  }
+  $('exportBtn').onclick=exportExcel;fillCompanies();resetForm();render();if('serviceWorker'in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>
